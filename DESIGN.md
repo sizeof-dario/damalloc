@@ -1,7 +1,7 @@
 # damalloc design route
 
 > [NOTE!]
-> Some of the concepts below may not have been implemented yet! This file is also intended as a journal to 
+> Some of the concepts below may not have been implemented yet! This file is also intended as a journal to write down some decisions before they are turned into code.
 
 ## How to use the allocator
 The user can build it as static or dynamic library. The dynamic one can be linked dynamically with LD_PRELOAD.
@@ -31,6 +31,9 @@ is equivalent to
 malloc(size);
 ```
 Well, the opposite is also true; that is, for the second way, if one wants to allocate on the heap, they can call **malloc**() as usual.
+
+
+Functions has two level of abstractions. The actual API function with a clean signature that can be used with default settings and an internal function implementation. The user shall call the API one, but this distinction allows a series of personalizations via a set of configuration parameters. Those parameters shall be thread local. When a new thread is spawn, it inherits its parent flags. This mimics how forking processes clones them.
 
 ### Dealing with the heap
 The heap works a little different than other arenas, because its initialization is not something the user should care about. So, the function that deals with it shall be marked as `__attribute__((constructor))`.
